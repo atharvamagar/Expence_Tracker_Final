@@ -189,18 +189,31 @@ export default function CalendarPage() {
       ) : (
         <>
           {/* Monthly summary */}
+          
           <div className="mb-4 grid grid-cols-3 gap-2">
             <Card className="p-3 bg-blue-50">
               <div className="text-xs md:text-sm text-blue-700">Income</div>
-              <div className="text-lg md:text-xl font-semibold">₹{incomeRecords.reduce((sum, inc) => sum + inc.amount, 0).toFixed(0)}</div>
+              <div className="text-lg md:text-xl font-semibold">
+                ₹{incomeRecords
+                  .filter(inc => isSameMonth(new Date(inc.date), currentMonth))
+                  .reduce((sum, inc) => sum + inc.amount, 0)
+                  .toFixed(0)}
+              </div>
             </Card>
             <Card className="p-3 bg-red-50">
               <div className="text-xs md:text-sm text-red-700">Expenses</div>
-              <div className="text-lg md:text-xl font-semibold">₹{expenses.reduce((sum, exp) => sum + exp.amount, 0).toFixed(0)}</div>
+              <div className="text-lg md:text-xl font-semibold">
+                ₹{expenses
+                  .filter(exp => isSameMonth(new Date(exp.date), currentMonth))
+                  .reduce((sum, exp) => sum + exp.amount, 0)
+                  .toFixed(0)}
+              </div>
             </Card>
             <Card className="p-3 bg-green-50">
               <div className="text-xs md:text-sm text-green-700">Remaining</div>
-              <div className="text-lg md:text-xl font-semibold">₹{total.toFixed(0)}</div>
+              <div className="text-lg md:text-xl font-semibold">
+                ₹{total.toFixed(0)}
+              </div>
             </Card>
           </div>
 
@@ -276,7 +289,7 @@ export default function CalendarPage() {
                 <CardContent className="space-y-3">
                   {incomeRecords.filter(inc => isSameDay(new Date(inc.date), selectedDay)).length > 0 && (
                     <div>
-                      <h3 className="font-medium mb-2">Income</h3>
+                      <h3 className="font-medium mb-2 text-blue-500">Income</h3>
                       <div className="space-y-2">
                         {incomeRecords.filter(inc => isSameDay(new Date(inc.date), selectedDay)).map(inc => (
                           <div key={inc._id} className="flex justify-between items-center py-2 border-b">
@@ -293,7 +306,7 @@ export default function CalendarPage() {
                   
                   {expenses.filter(expense => isSameDay(new Date(expense.date), selectedDay)).length > 0 ? (
                     <div>
-                      <h3 className="font-medium mb-2">Expenses</h3>
+                      <h3 className="font-medium mb-2 text-red-500">Expenses</h3>
                       <div className="space-y-2">
                         {expenses.filter(expense => isSameDay(new Date(expense.date), selectedDay)).map(expense => (
                           <div key={expense._id} className="flex justify-between items-center py-2 border-b">

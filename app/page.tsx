@@ -26,6 +26,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DeleteExpense, DeleteTransaction } from "./actions/delete";
 import { getExpense, getIncome } from "./actions/getActions";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react"
 
 export interface Expense {
   _id: string; // Store as string because ObjectId is complex to handle in frontend
@@ -68,6 +69,7 @@ const categoryConfig: Record<string, CategoryData> = {
 };
 
 export default function Home() {
+  const { data: session } = useSession(); // Add this line
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [income, setIncome] = useState<Income[]>([]);
   // const[totalIncome,setTotalIncome] = useState(0)
@@ -231,14 +233,16 @@ export default function Home() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Avatar>
-            <AvatarImage src="/placeholder.svg" alt="User avatar" />
+            <AvatarImage src={"/placeholder.svg"} alt="User avatar" />
             <AvatarFallback className="bg-blue-500 text-white">
-              👤
+              {session?.user?.name?.charAt(0) || "👤"}
             </AvatarFallback>
           </Avatar>
           <div>
             <p className="text-sm text-gray-500">Welcome back</p>
-            <h2 className="font-semibold">My Finances</h2>
+            <h3 className="font-semibold">
+              {session?.user?.name || "My Finances"}
+            </h3>
           </div>
         </div>
         <div className="flex items-center gap-2">
