@@ -1,4 +1,5 @@
 "use client"
+import { usePathname } from "next/navigation"
 
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
@@ -16,6 +17,12 @@ interface Message {
 }
 
 export function ExpenseChatbot() {
+  const pathname = usePathname()
+  
+  // Don't show chatbot on login or register pages
+  if (pathname === '/login' || pathname === '/register') {
+    return null
+  }
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
     {

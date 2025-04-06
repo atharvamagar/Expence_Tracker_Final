@@ -12,6 +12,11 @@ const navItems = [
 
 export function BottomNav() {
   const pathname = usePathname()
+  
+  // Don't show BottomNav on login or register pages
+  if (pathname === '/login' || pathname === '/register') {
+    return null
+  }
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t">

@@ -435,73 +435,73 @@ export default function Home() {
         </TabsContent>
 
         <TabsContent value="transactions" className="space-y-4 mt-4">
-          <div className="flex justify-between items-center">
-            <h3 className="font-medium">Recent Transactions</h3>
-            <Link
-              href={`/all-expenses?currentMonth=${currentMonth
-                .toISOString()
-                .slice(0, 7)}`}
-              className="text-sm text-blue-600"
+        <Card className="p-4">
+  <div className="flex justify-between items-center mb-3">
+    <h3 className="font-medium">Recent Transactions</h3>
+    <Link
+      href={`/all-expenses?currentMonth=${currentMonth
+        .toISOString()
+        .slice(0, 7)}`}
+      className="text-xs text-blue-600"
+    >
+      View All
+    </Link>
+  </div>
+
+  <div className="space-y-3">
+    {expenses.length === 0 ? (
+      <p className="text-sm text-gray-500 text-center py-4">
+        No expenses recorded this month
+      </p>
+    ) : (
+      expenses
+        .sort(
+          (a, b) =>
+            new Date(b.date).getTime() - new Date(a.date).getTime()
+        )
+        .slice(0, 3)
+        .map((expense) => {
+          const category = expense.category || "other";
+          const config = categoryConfig[category] || categoryConfig.other;
+          const IconComponent = config.icon;
+
+          return (
+            <div
+              key={expense._id}
+              className="flex items-center justify-between p-2 rounded-lg border"
             >
-              View All
-            </Link>
-          </div>
-
-          <div className="space-y-3">
-            {expenses.length === 0 ? (
-              <Card className="p-8 text-center">
-                <p className="text-gray-500 mb-4">
-                  No expenses recorded this month
+              <div className="flex items-center gap-2">
+                <div className={`p-2 rounded-full ${config.bgColor}`}>
+                  <IconComponent size={16} className={config.color} />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">{expense.description}</p>
+                  <p className="text-xs text-gray-500">
+                    {format(new Date(expense.date), "dd MMM yyyy")}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <p className="font-semibold text-red-500">
+                  -₹
+                  {expense.amount.toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                  })}
                 </p>
-              </Card>
-            ) : (
-              expenses
-                .sort(
-                  (a, b) =>
-                    new Date(b.date).getTime() - new Date(a.date).getTime()
-                )
-                .slice(0, 5)
-                .map((expense) => {
-                  const category = expense.category || "other";
-                  const config =
-                    categoryConfig[category] || categoryConfig.other;
-                  const IconComponent = config.icon;
+                <button
+                  onClick={() => deleteExpense(expense._id)}
+                  className="text-red-500 hover:text-red-700 text-sm"
+                >
+                  ❌
+                </button>
+              </div>
+            </div>
+          );
+        })
+    )}
+  </div>
+</Card>
 
-                  return (
-                    <Card
-                      key={expense._id}
-                      className="p-4 flex items-center justify-between hover:shadow-md transition-shadow"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className={`p-3 rounded-full ${config.bgColor}`}>
-                          <IconComponent size={20} className={config.color} />
-                        </div>
-                        <div>
-                          <p className="font-medium">{expense.description}</p>
-                          <p className="text-xs text-gray-500">
-                            {format(new Date(expense.date), "dd MMM yyyy")}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <p className="font-semibold text-red-500">
-                          -₹
-                          {expense.amount.toLocaleString("en-IN", {
-                            minimumFractionDigits: 2,
-                          })}
-                        </p>
-                        <button
-                          onClick={() => deleteExpense(expense._id)}
-                          className="text-red-500 hover:text-red-700 text-sm"
-                        >
-                          ❌
-                        </button>
-                      </div>
-                    </Card>
-                  );
-                })
-            )}
-          </div>
         </TabsContent>
       </Tabs>
     </div>
